@@ -1,7 +1,6 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 export const useProductStore = defineStore("ProductStore", {
   state: () => {
-    // const route = useRoute();
     return {
       /**
        * The listing of all the products
