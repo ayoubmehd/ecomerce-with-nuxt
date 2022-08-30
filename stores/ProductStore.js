@@ -1,4 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
+
 export const useProductStore = defineStore("ProductStore", {
   state: () => {
     return {
@@ -33,15 +34,20 @@ export const useProductStore = defineStore("ProductStore", {
   },
   actions: {
     async fetchProducts() {
-      const res = await $fetch("/api/products");
-      this.products = res;
+      const { $contentful } = useNuxtApp();
+
+      const res = await $contentful.getEntries({
+        content_type: "product",
+      });
+
+      this.products = res.items;
       return this.products;
     },
     async fetchProduct(id) {
-      const products = await this.fetchProducts();
-      this.singleProduct = products.find((p) => {
-        return p.sys.id === id;
-      });
+      const { $contentful } = useNuxtApp();
+
+      const res = await $contentful.getEntry(id);
+      this.singleProduct = res;
       return this.singleProduct;
     },
   },

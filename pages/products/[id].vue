@@ -19,8 +19,8 @@ const description = computed(() =>
   product.value ? marked.parse(product.value?.fields?.description) : null
 );
 
-function handleAddToCart(product) {
-  useAlertsStore().success(product.fields.name + " added to cart");
+function handleAddToCart(newProduct) {
+  useAlertsStore().success(newProduct.fields.name + " added to cart");
 }
 </script>
 <template>
