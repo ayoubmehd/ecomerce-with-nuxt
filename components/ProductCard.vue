@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <NuxtLink
-    class="block product-card"
+    class="block product-card product-animate"
     :to="{ name: 'products-id', params: { id: product.sys.id } }"
   >
     <div class="card h-full bg-base-100 shadow-xl relative">

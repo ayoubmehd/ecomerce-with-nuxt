@@ -38,6 +38,7 @@ export const useProductStore = defineStore("ProductStore", {
 
       const res = await $contentful.getEntries({
         content_type: "product",
+        ...this.activeFilters,
       });
 
       this.products = res.items;
