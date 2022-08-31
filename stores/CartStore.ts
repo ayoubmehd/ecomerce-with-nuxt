@@ -34,23 +34,27 @@ export const useCartStore = defineStore("CartStore", () => {
   });
 
   function addProduct(product) {
-    const p = this.items.find((item) => item.sys.id === product.sys.id);
+    const p = items.value.find((item) => item.sys.id === product.sys.id);
 
     if (p) {
       return p.quantity++;
     }
 
-    return this.items.push({
+    return items.value.push({
       ...product,
       quantity: 1,
     });
   }
   function removeProduct(id) {
-    const index = this.items.findIndex((item) => (item.sys.id = id));
+    const index = items.value.findIndex((item) => item.sys.id == id);
 
-    if (!index) return;
+    if (index === -1) return;
 
-    this.items.splice(index, 1);
+    return items.value.splice(index, 1);
+  }
+
+  function removeProducts(...ids) {
+    return ids.forEach((id) => removeProduct(id));
   }
 
   return {
@@ -60,6 +64,7 @@ export const useCartStore = defineStore("CartStore", () => {
     total,
     addProduct,
     removeProduct,
+    removeProducts,
   };
 });
 

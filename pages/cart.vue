@@ -1,8 +1,22 @@
 <script setup>
 const selected = ref([]);
-const checkAll = ref();
+const checkAll = ref(false);
 
 const cartStore = useCartStore();
+
+watch(checkAll, () => {
+  if (checkAll.value && cartStore.items.length !== selected.value.length) {
+    return cartStore.items.forEach((item) => selected.value.push(item.sys.id));
+  }
+
+  if (cartStore.items.length !== selected.value.length) {
+    selected.value = [];
+  }
+});
+
+watchEffect(() => {
+  checkAll.value = cartStore.items.length === selected.value.length;
+});
 
 async function handleCheckout() {
   console.log("checking out");
@@ -25,7 +39,12 @@ async function handleCheckout() {
                 <tr>
                   <th>
                     <label>
-                      <input type="checkbox" class="checkbox" ref="checkAll" />
+                      <input
+                        type="checkbox"
+                        class="checkbox"
+                        v-model="checkAll"
+                        :value="true"
+                      />
                     </label>
                   </th>
                   <th></th>
@@ -43,7 +62,7 @@ async function handleCheckout() {
                         v-model="selected"
                         type="checkbox"
                         class="checkbox"
-                        @change="checkAll.checked = false"
+                        @change="checkAll = false"
                         :value="product.sys.id"
                       />
                     </label>
@@ -95,7 +114,11 @@ async function handleCheckout() {
                 </tr>
               </tbody>
             </table>
-            <button v-if="selected.length" class="text-sm text-red-500">
+            <button
+              @click="cartStore.removeProducts(...selected)"
+              v-if="selected.length"
+              class="text-sm text-red-500"
+            >
               Remove Selected
             </button>
           </div>
