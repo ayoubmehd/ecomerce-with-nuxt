@@ -107,17 +107,6 @@ export function useDeskree() {
       if (!loggedInUser.value || !loggedInUser.value.cartId) return;
 
       // persist user's cart data to Deskree here
-
-      /**
-       * example of what the return from Deskree will look like
-        data: {
-          author: "4xsOPtHHiSMI06OHT5gvDnwmLuo2",
-          createdAt: "2022-08-19T06:24:47-05:00",
-          products: JSON.parse("[]"),
-          updatedAt: "2022-08-22T11:03:07-05:00",
-        },
-
-       */
       return dbRestRequest(`/carts/${loggedInUser.value.cartId}`, "PATCH", {
         products: JSON.stringify(products),
       });
@@ -138,10 +127,27 @@ export function useDeskree() {
    */
   const reviews = {
     get(productId) {
+      const query = new URLSearchParams({
+        where: JSON.stringify([
+          {
+            attribute: "product_id",
+            operator: "=",
+            value: productId,
+          },
+        ]),
+      });
+
       // make request to get reviews for a product here
+      return dbRestRequest(`/reviews?${query.toString()}`);
     },
     submit({ text, rating, title, product_id }) {
       // make request to add a new review here
+      return dbRestRequest("/reviews", "POST", {
+        text,
+        rating: Math.max(1, Math.min(5, rating)),
+        title,
+        product_id,
+      });
     },
   };
 

@@ -31,7 +31,7 @@ function handleAddToCart(newProduct) {
     <div v-if="product">
       <div class="sm:flex">
         <img
-          class="mr-10 h-80 object-contain sm:w-1/3"
+          class="mr-10 h-80 sticky top-7 object-contain sm:w-1/3"
           :src="product?.fields.image[0].fields?.file.url"
           :alt="product?.fields.image[0].fields?.file.description"
         />
@@ -52,7 +52,7 @@ function handleAddToCart(newProduct) {
             Add to cart
           </button>
 
-          <ProductReviews :productId="product.sys.id" />
+          <ProductReviews />
         </div>
       </div>
     </div>
