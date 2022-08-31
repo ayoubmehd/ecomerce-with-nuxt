@@ -1,7 +1,31 @@
+import { watchDebounced } from "@vueuse/shared";
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 export const useCartStore = defineStore("CartStore", () => {
   const items = ref([]);
+
+  const desktree = useDeskree();
+  const { refresh } = useAsyncData("cart", async () => {
+    const res = await desktree.user.getCart();
+
+    items.value = res;
+  });
+
+  const { refresh: updateCart } = useAsyncData("update-cart", async () => {
+    desktree.user.updateCart(items.value);
+  });
+
+  desktree.auth.onAuthStateChange(() => {
+    refresh();
+  });
+
+  watchDebounced(
+    () => items.value,
+    () => {
+      updateCart();
+    },
+    { deep: true, debounce: 500, maxWait: 1000 }
+  );
 
   const subTotalInCents = computed<number>(() => {
     return items.value.reduce(
@@ -40,17 +64,18 @@ export const useCartStore = defineStore("CartStore", () => {
       return p.quantity++;
     }
 
-    return items.value.push({
+    items.value.push({
       ...product,
       quantity: 1,
     });
   }
+
   function removeProduct(id) {
     const index = items.value.findIndex((item) => item.sys.id == id);
 
     if (index === -1) return;
 
-    return items.value.splice(index, 1);
+    items.value.splice(index, 1);
   }
 
   function removeProducts(...ids) {

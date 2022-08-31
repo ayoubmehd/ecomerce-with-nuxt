@@ -23,7 +23,7 @@ defineProps<{
         <h2 class="justify-between flex">
           <span class="w-3/5"> {{ product.fields.name }} </span>
           <small class="w-2/5 p-1 badge badge-outline">
-            <ProductPrice :price="product.fields.price" />
+            <ProductPrice :price="product.fields.price ?? 0" />
           </small>
         </h2>
         <p
