@@ -3,6 +3,8 @@ import * as marked from "marked";
 const route = useRoute();
 const productStore = useProductStore();
 
+const cartStore = useCartStore();
+
 const { data: product } = await useAsyncData(
   `product${route.params.id}`,
   async () => {
@@ -20,6 +22,7 @@ const description = computed(() =>
 );
 
 function handleAddToCart(newProduct) {
+  cartStore.addProduct(newProduct);
   useAlertsStore().success(newProduct.fields.name + " added to cart");
 }
 </script>
